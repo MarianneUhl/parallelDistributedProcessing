@@ -1,0 +1,17 @@
+data = LOAD '/user/maria_dev/diplomacy/orders.csv'
+   USING PigStorage(',') AS
+           (game_id,
+           unit_id,
+           unit_order,
+           location,
+           target_dest,
+           success,
+           reason,
+           turn_num);
+target_holland = FILTER data BY target_dest == '"Holland"';
+grouped_data = GROUP target_holland BY location;
+count_holland= FOREACH grouped_data GENERATE group,'"Holland"',COUNT_STAR(target_holland);
+ordered_data = ORDER count_holland BY group ASC;
+
+
+DUMP ordered_data;
